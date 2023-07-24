@@ -74,7 +74,7 @@ suitable_pet(Pet) :-
     pet(Pet, _, _, Activity, Size, Maintenance, Compatibility),
     preferred_activity(Activity),
     preferred_size(Size),
-    preffered_maintenance(Maintenance),
+    preferred_maintenance(Maintenance),
     preferred_compatibility_with_other_pets(Compatibility).
 
 % do suitable_for_a_small_space(Pet) :-
