@@ -124,52 +124,6 @@ filter_pets_by_other_pets_compatibility(no, PetList) :-
     ), PetList).
 
 
-% recommend_pet(Pet) :-
-
-    
-%     pet(Pet, _, _, _, _, _, _, _, _), 
-
-
-%     get_activity_preference(Activity),
-%     get_size_preference(Size),
-%     get_maintenance_preference(Maintenance),
-%     get_size_of_living_space(Small_Space),
-%     get_amount_of_children(Child_Friendly),
-%     get_compatibility_preference(Compatibility),
-
-%     assertz(preferred_activity(Activity)),
-%     assertz(preferred_size(Size)),
-%     assertz(preferred_maintenance_level(Maintenance)),
-%     assertz(suitable_for_a_small_space(Small_Space)),
-%     assertz(child_friendly(Child_Friendly)),
-%     assertz(preferred_compatibility_with_other_pets(Compatibility)),
-    
-%     findall(Pet, (
-%         pet(Pet, _, _, _, _, _, _, _, _),
-%         (filter_pets_by_activity(Activity, PetList1), member(Pet, PetList1)) ;
-%         (filter_pets_by_size(Size, PetList2), member(Pet, PetList2)) ;
-%         (filter_pets_by_maintenance_level(Maintenance, PetList3), member(Pet, PetList3)) ;
-%         (filter_pets_by_suitable_for_small_space(Small_Space, PetList4), member(Pet, PetList4)) ;
-%         (filter_pets_by_child_friendly(Child_Friendly, PetList5), member(Pet, PetList5)) ;
-%         (filter_pets_by_other_pets_compatibility(Compatibility, PetList6), member(Pet, PetList6))
-%     ), RecommendedPets),
-
-%     % findall(Pet, (
-%     %     pet(Pet, _, _, _, _, _, _, _, _),
-%     %     (filter_pets_by_activity(Activity, _); filter_pets_by_size(Size, _);
-%     %      filter_pets_by_maintenance_level(Maintenance, _);
-%     %      filter_pets_by_suitable_for_small_space(Small_Space, _);
-%     %      filter_pets_by_child_friendly(Child_Friendly, _);
-%     %      filter_pets_by_other_pets_compatibility(Compatibility, _))
-%     % ), _),
-
-%     retractall(preferred_activity(_)),
-%     retractall(preferred_size(_)),
-%     retractall(preferred_maintenance_level(_)),
-%     retractall(suitable_for_a_small_space(_)),
-%     retractall(child_friendly(_)),
-%     retractall(preferred_compatibility_with_other_pets(_)).
-
 recommend_pet(PreferredPet, RecommendedPets) :-
     get_activity_preference(Activity),
     get_size_preference(Size),
@@ -202,6 +156,8 @@ recommend_pet(PreferredPet, RecommendedPets) :-
     retractall(child_friendly(_)),
     retractall(preferred_compatibility_with_other_pets(_)),
 
+    
+    % PreferredPet = RecommendedPets.
     random_member(PreferredPet, RecommendedPets).
 
 % --- RULES ---
@@ -253,54 +209,11 @@ getInfo(PreferredPet) :-
     assertz(hooman(Name)),
 
     recommend_pet(PreferredPet, RecommendedPets),
-    (RecommendedPets = []
-        -> writeln('Sorry, no pets match your preferences.')
-        ; (writeln('Your recommended pet is: '), writeln(PreferredPet))
-    ),
+    % writeln('Sorry, no pets match your preferences.'),
+    writeln('Your recommended pet is: '), 
+    writeln(PreferredPet),
 
     retractall(hooman(_)).
 
-% getInfo :-
-%     writeln('What is your name?'),
-%     read(Name),
-%     write('Hello '),
-%     write(Name),
-%     write(', '),
-%     assertz(hooman(Name)),
-
-%     recommend_pet(Pet),
-%     writeln('Your recommended pets are: '),
-%     writeln(Pet),
-
-%     retractall(preferred_activity(_)),
-%     retractall(preferred_size(_)),
-%     retractall(preferred_maintenance_level(_)),
-%     retractall(suitable_for_a_small_space(_)),
-%     retractall(child_friendly(_)),
-%     retractall(preferred_compatibility_with_other_pets(_)).
-
-% recommend_pet_based_on_user_input(Pet) :-
-%     get_activity_preference(Activity),
-%     get_size_preference(Size),
-%     get_maintenance_preference(Maintenance),
-%     get_size_of_living_space(Small_Space),
-%     get_amount_of_children(Child_Friendly),
-%     get_compatibility_preference(Compatibility),
-
-%     assertz(preferred_activity(Activity)),
-%     assertz(preferred_size(Size)),
-%     assertz(preferred_maintenance_level(Maintenance)),
-%     assertz(suitable_for_a_small_space(Small_Space)),
-%     assertz(child_friendly(Child_Friendly)),
-%     assertz(preferred_compatibility_with_other_pets(Compatibility)),
-
-%     recommend_pet(Pet),
-
-%     retractall(preferred_activity(_)),
-%     retractall(preferred_size(_)),
-%     retractall(preferred_maintenance_level(_)),
-%     retractall(suitable_for_a_small_space(_)),
-%     retractall(child_friendly(_)),
-%     retractall(preferred_compatibility_with_other_pets(_)).
-
-
+getInfo(PreferredPet) :-
+    writeln('Sorry, no pets match your preferences.').
