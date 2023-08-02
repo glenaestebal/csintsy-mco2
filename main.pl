@@ -1,29 +1,17 @@
-% -----------------------
-% TO DO IN CODE
-% [x] put the facts
-% [x] put the rules
-% [] define/map rules
-%   [/] define the rules
-%   [x] rules for size
-%   [x] rules for activity
-%   [x] rules for maintenance
-%   [/] rules for suitable for a small space
-%   [/] rules for suitable with children
-%   [x] rules for compatiblity with other pets
-% [] connect each other
-% [/] user input
-
-% TO DO IN REPORT
-% [] explain temperament in report
-%   [] compatibility is based on temperament kaya make sure to defend that
-% [] suitable_for_a_small_space is based on size kaya make sure to defend that
-% -----------------------
+% type "start." to start
+% always add a period after each answer: "glena."
 
 
+
+:- dynamic preferred_activity/1.
+:- dynamic preferred_size/1.
+:- dynamic preferred_maintenance_level/1.
+:- dynamic suitable_for_a_small_space/1.
+:- dynamic child_friendly/1.
+:- dynamic preferred_compatibility_with_other_pets/1.
 
 % --- FACTS ---
 
-% pet characteristics 
 % pet(animal, personality, temperament, activity_level, size, maintenance_level, suitable_for_a_small_space, child_friendly, compatibility).
 pet(dog, loyal, choleric, highly_active, small_to_large, high_maintenance, slightly_suitable, child_friendly, slightly_not_compatible).
 pet(cat, independent, sanguine, moderately_active, small_to_medium, moderate_maintenance, suitable, child_friendly, compatible).
@@ -47,164 +35,198 @@ pet(ferret, loyal, choleric, highly_active, small, high_maintenance, suitable, n
 pet(hermit_crab, shy, phlegmatic, moderately_active, small, low_maintenance, suitable, child_friendly, slightly_compatible).
 
 
-% User input 
-% change the paramenters if you want another animal to show
-% for example: ferret - highly_active, small, high_maintenance, slightly_not_compatible
-preferred_activity(moderately_active).
-preferred_size(small_to_medium).
-preferred_maintenance(moderate_maintenance).
-preferred_compatibility_with_other_pets(compatible).
 
-
-% Attempt for user input, not sure if it makes sense and if working.
-
-% Predicate to take user input for preferred activity level
 get_activity_preference(Activity) :-
-    write('Enter your preferred activity level (moderately_active, active, highly_active): '),
+    write('enter your preferred activity level (moderately_active, active, highly_active): '),
     read(Activity).
 
-% Predicate to take user input for preferred size
+
 get_size_preference(Size) :-
-    write('Enter your preferred size (small, medium, large, small_to_large, small_to_medium, medium_to_large): '),
+    write('enter your preferred size (small, medium, large, small_to_large, small_to_medium, medium_to_large): '),
     read(Size).
 
-% Predicate to take user input for preferred maintenance level
+
 get_maintenance_preference(Maintenance) :-
-    write('Enter your preferred maintenance level (low_maintenance, moderate_maintenance, high_maintenance): '),
+    write('enter your preferred maintenance level (low_maintenance, moderate_maintenance, high_maintenance): '),
     read(Maintenance).
 
-% Predicate to take user input for preferred compatibility with other pets
+
+get_amount_of_children(Child_Friendly) :-
+    write('do you have children (yes, no)?: '),
+    read(Child_Friendly).
+
+
+get_size_of_living_space(Small_Space) :-
+    write('do you live in a small space (yes, no)?: '),
+    read(Small_Space).
+
+
 get_compatibility_preference(Compatibility) :-
-    write('Enter your preferred compatibility with other pets (compatible, slightly_compatible, slightly_not_compatible): '),
+    write('do you have other pets (yes, no)?: '),
     read(Compatibility).
 
-% Predicate to recommend a pet based on user preferences
-recommend_pet(Pet) :-
-    suitable_for_a_small_space(Pet),
-    child_friendly(Pet),
-    compatibility_with_other_pets(Pet),
-    pet(Pet, _, _, Activity, Size, Maintenance, Compatibility),
-    preferred_activity(Activity),
-    preferred_size(Size),
-    preferred_maintenance(Maintenance),
-    preferred_compatibility_with_other_pets(Compatibility).
+% pet(animal, personality, temperament, activity_level, size, maintenance_level, suitable_for_a_small_space, child_friendly, compatibility).
 
-% Predicate to take all user preferences and recommend a suitable pet
+
+filter_pets_by_activity(Activity, PetList) :-
+    findall(Pet, (
+        pet(Pet, _, _, Activity, _, _, _, _, _),
+        preferred_activity(Activity)
+    ), PetList).
+
+
+filter_pets_by_size(Size, PetList) :-
+    findall(Pet, (
+        pet(Pet, _, _, _, Size, _, _, _, _),
+        preferred_size(Size)
+    ), PetList).
+
+filter_pets_by_maintenance_level(Maintenance, PetList) :-
+    findall(Pet, (
+        pet(Pet, _, _, _, _, Maintenance, _, _, _),
+        preferred_maintenance_level(Maintenance)
+    ), PetList).
+
+filter_pets_by_suitable_for_small_space(Small_Space, PetList) :-
+    findall(Pet, (
+        pet(Pet, _, _, _, _, _, Small_Space, _, _),
+        Small_Space = suitable ; Small_Space = slightly_suitable
+    ), PetList).
+
+filter_pets_by_child_friendly(Child_Friendly, PetList) :-
+    findall(Pet, (
+        pet(Pet, _, _, _, _, _, _, Child_Friendly, _),
+        Child_Friendly = child_friendly
+    ), PetList).
+
+filter_pets_by_other_pets_compatibility(Compatibility, PetList) :-
+    findall(Pet, (
+        pet(Pet, _, _, _, _, _, _, _, Compatibility),
+        Compatibility = compatible; Compatibility = slightly_compatible
+    ), PetList).
+
+
+
+recommend_pet(Pet) :-
+
+    
+    pet(Pet, _, _, _, _, _, _, _, _), 
+
+   
+    get_activity_preference(Activity),
+    get_size_preference(Size),
+    get_maintenance_preference(Maintenance),
+    get_size_of_living_space(Small_Space),
+    get_amount_of_children(Child_Friendly),
+    get_compatibility_preference(Compatibility),
+
+    
+    assertz(preferred_activity(Activity)),
+    assertz(preferred_size(Size)),
+    assertz(preferred_maintenance_level(Maintenance)),
+    assertz(suitable_for_a_small_space(Small_Space)),
+    assertz(child_friendly(Child_Friendly)),
+    assertz(preferred_compatibility_with_other_pets(Compatibility)),
+
+    
+    findall(Pet, (
+        pet(Pet, _, _, _, _, _, _, _, _),
+        (filter_pets_by_activity(Activity, PetList1), member(Pet, PetList1)) ;
+        (filter_pets_by_size(Size, PetList2), member(Pet, PetList2)) ;
+        (filter_pets_by_maintenance_level(Maintenance, PetList3), member(Pet, PetList3)) ;
+        (filter_pets_by_suitable_for_small_space(Small_Space, PetList4), member(Pet, PetList4)) ;
+        (filter_pets_by_child_friendly(Child_Friendly, PetList5), member(Pet, PetList5)) ;
+        (filter_pets_by_other_pets_compatibility(Compatibility, PetList6), member(Pet, PetList6))
+    ), PetList).
+
+    
+    retractall(preferred_activity(_)),
+    retractall(preferred_size(_)),
+    retractall(preferred_maintenance_level(_)),
+    retractall(suitable_for_a_small_space(_)),
+    retractall(child_friendly(_)),
+    retractall(preferred_compatibility_with_other_pets(_)).
+
+
+% --- RULES ---
+
+% activity level
+preferred_activity(moderately_active).
+preferred_activity(active).
+preferred_activity(highly_active).
+
+% size
+preferred_size(small).
+preferred_size(medium).
+preferred_size(large).
+preferred_size(small_to_medium).
+preferred_size(medium_to_large).
+
+% maintenance level
+preferred_maintenance_level(low_maintenance).
+preferred_maintenance_level(moderate_maintenace).
+preferred_maintenance_level(high_maintenance).
+
+% suitable for a small space
+suitable_for_a_small_space(slightly_suitable).
+suitable_for_a_small_space(suitable).
+suitable_for_a_small_space(not_suitable).
+
+% child_friendly
+child_friendly(not_child_friendly).
+child_friendly(child_friendly).
+
+% compatibility
+preferred_compatibility_with_other_pets(compatible).
+preferred_compatibility_with_other_pets(slightly_compatible).
+preferred_compatibility_with_other_pets(slightly_not_compatible).
+
+
+start :- 
+    writeln('Hello, I am an expert system'),
+    getInfo.
+
+getInfo :-
+    writeln('What is your name?'),
+    read(Name),
+    write('Hello '),
+    write(Name),
+    write(', '),
+    assertz(hooman(Name)),
+
+    recommend_pet(Pet),
+    writeln('Your recommended pets are: '),
+    writeln(Pet),
+
+    retractall(preferred_activity(_)),
+    retractall(preferred_size(_)),
+    retractall(preferred_maintenance_level(_)),
+    retractall(suitable_for_a_small_space(_)),
+    retractall(child_friendly(_)),
+    retractall(preferred_compatibility_with_other_pets(_)).
+
 recommend_pet_based_on_user_input(Pet) :-
     get_activity_preference(Activity),
     get_size_preference(Size),
     get_maintenance_preference(Maintenance),
+    get_size_of_living_space(Small_Space),
+    get_amount_of_children(Child_Friendly),
     get_compatibility_preference(Compatibility),
-    assert(preferred_activity(Activity)),
-    assert(preferred_size(Size)),
-    assert(preferred_maintenance(Maintenance)),
-    assert(preferred_compatibility_with_other_pets(Compatibility)),
+
+    assertz(preferred_activity(Activity)),
+    assertz(preferred_size(Size)),
+    assertz(preferred_maintenance_level(Maintenance)),
+    assertz(suitable_for_a_small_space(Small_Space)),
+    assertz(child_friendly(Child_Friendly)),
+    assertz(preferred_compatibility_with_other_pets(Compatibility)),
+
     recommend_pet(Pet),
-    retract(preferred_activity(Activity)),
-    retract(preferred_size(Size)),
-    retract(preferred_maintenance(Maintenance)),
-    retract(preferred_compatibility_with_other_pets(Compatibility)).
 
-% --- RULES ---
-
-% rule to recommend a pet based on user preferences
-
-% Recommended pets
-recommend_pet(Pet) :-
-    recommend_pet(Pet) :-
-    suitable_for_a_small_space(Pet),
-    child_friendly(Pet),
-    compatibility_with_other_pets(Pet),
-    pet(Pet, _, _, Activity, Size, Maintenance, Compatibility),
-    preferred_activity(Activity),
-    preferred_size(Size),
-    preferred_maintenance(Maintenance),
-    preferred_compatibility_with_other_pets(Compatibility).
-
-% Suitable pets
-suitable_pet(Pet) :-
-    suitable_for_a_small_space(Pet),
-    child_friendly(Pet),
-    compatibility_with_other_pets(Pet),
-    pet(Pet, _, _, Activity, Size, Maintenance, Compatibility),
-    preferred_activity(Activity),
-    preferred_size(Size),
-    preferred_maintenance(Maintenance),
-    preferred_compatibility_with_other_pets(Compatibility).
-
-% do suitable_for_a_small_space(Pet) :-
-    suitable_for_a_small_space(Pet) :-
-    pet(Pet, _, _, _, Size, _, _, _, _),
-    (Size = small; Size = small_to_medium).
-    
-% do child_friendly(Pet) :-
-    child_friendly(Pet) :-
-    pet(Pet, _, _, _, _, _, _, child_friendly, _).
-    
-% add suitable_for_a_small_space and child_friendly here
-compatibility_with_other_pets(Pet) :-
-    suitable_for_a_small_space(Pet),
-    child_friendly(Pet),
-    compatibility_with_other_pets(Pet),
-    pet(Pet, _, _, Activity, Size, Maintenance, Compatibility),
-    preferred_activity(Activity),
-    preferred_size(Size),
-    preferred_maintenance(Maintenance),
-    preferred_compatibility_with_other_pets(Compatibility).
-
-
-% defines Activity
-activity_level_preference(moderately_active).
-activity_level_preference(active).
-activity_level_preference(highly_active).
-
-% defines Size
-size_preference(small).
-size_preference(medium).
-size_preference(large).
-size_preference(small_to_large).
-size_preference(small_to_medium).
-size_preference(medium_to_large).
-
-% defines Maintenance
-maintenance_preference(low_maintenance).
-maintenance_preference(moderate_maintenace).
-maintenance_preference(high_maintenance).
-
-% defines Suitable for a Small Space
-suitable_for_a_small_space(dog).
-suitable_for_a_small_space(cat).
-suitable_for_a_small_space(bird).
-suitable_for_a_small_space(fish).
-suitable_for_a_small_space(hamster).
-suitable_for_a_small_space(guinea_pig).
-suitable_for_a_small_space(gerbil).
-suitable_for_a_small_space(hedgehog).
-suitable_for_a_small_space(gecko).
-suitable_for_a_small_space(frogs).
-suitable_for_a_small_space(snakes).
-suitable_for_a_small_space(spiders).
-suitable_for_a_small_space(ant_farm).
-suitable_for_a_small_space(hermit_crab).
-
-% defines Child Friendly
-child_friendly(cat).
-child_friendly(bird).
-child_friendly(fish).
-child_friendly(hamster).
-child_friendly(guinea_pig).
-child_friendly(gerbil).
-child_friendly(hedgehog).
-child_friendly(turtle_tortoise).
-child_friendly(gecko).
-child_friendly(frogs).
-child_friendly(hermit_crab).
-
-% defines Compatibility
-compatibility_preference(compatible).
-compatibility_preference(slightly_compatible).
-compatibility_preference(slightly_not_compatible).
-
-
+    retractall(preferred_activity(_)),
+    retractall(preferred_size(_)),
+    retractall(preferred_maintenance_level(_)),
+    retractall(suitable_for_a_small_space(_)),
+    retractall(child_friendly(_)),
+    retractall(preferred_compatibility_with_other_pets(_)).
 
 
