@@ -15,7 +15,7 @@
 % pet(animal, personality, temperament, activity_level, size, maintenance_level, suitable_for_a_small_space, child_friendly, compatibility).
 pet(dog, loyal, choleric, highly_active, small_to_large, high_maintenance, slightly_suitable, child_friendly, slightly_not_compatible).
 pet(cat, independent, sanguine, moderately_active, small_to_medium, moderate_maintenance, suitable, child_friendly, compatible).
-pet(bird, curious, choleric, moderately_active, small, moderate_maintenace, suitable, child_friendly, slightly_not_compatible).
+pet(bird, curious, choleric, moderately_active, small, moderate_maintenance, suitable, child_friendly, slightly_not_compatible).
 pet(fish, shy, phlegmatic, moderately_active, small_to_medium, low_maintenance, suitable, child_friendly, slightly_compatible).
 pet(hamster, curious, sanguine, highly_active, small, low_maintenance, suitable, child_friendly, compatible).
 pet(guinea_pig, lazy, sanguine, moderately_active, small, moderate_maintenance, suitable, child_friendly, compatible).
@@ -23,10 +23,10 @@ pet(gerbil, intelligent, phlegmatic, highly_active, small, moderate_maintenance,
 pet(hedgehog, shy, phlegmatic, highly_active, small, moderate_maintenance, suitable, child_friendly, slightly_compatible).
 pet(pig, compassionate, sanguine, moderately_active, small_to_large, high_maintenance, not_suitable, child_friendly, compatible).
 pet(rabbit, energetic, choleric, moderately_active, small, moderate_maintenance, suitable, not_child_friendly, slightly_not_compatible).
-pet(turtle_tortoise, shy, sanguine, moderately_active, small, moderate_maintenace, suitable, child_friendly, compatible).
-pet(iguana, shy, phlegmatic, moderately_active, medium_to_large, moderate_maintenace, not_suitable, not_child_friendly, slightly_compatible).
+pet(turtle_tortoise, shy, sanguine, moderately_active, small, moderate_maintenance, suitable, child_friendly, compatible).
+pet(iguana, shy, phlegmatic, moderately_active, medium_to_large, moderate_maintenance, not_suitable, not_child_friendly, slightly_compatible).
 pet(chameleon, shy, melancholic, moderately_active, small_to_medium, high_maintenance, slightly_suitable, not_child_friendly, slightly_not_compatible).
-pet(gecko, calm, phlegmatic, moderately_active, small, moderate_maintenace, suitable, child_friendly, slightly_compatible).
+pet(gecko, calm, phlegmatic, moderately_active, small, moderate_maintenance, suitable, child_friendly, slightly_compatible).
 pet(frogs, calm, phlegmatic, moderately_active, small, low_maintenance, suitable, child_friendly, slightly_compatible).
 pet(snakes, calm, phlegmatic, moderately_active, small, low_maintenance, slightly_suitable, not_child_friendly, slightly_compatible).
 pet(spiders, shy, melancholic, moderately_active, small, low_maintenance, suitable, not_child_friendly, slightly_not_compatible).
@@ -217,3 +217,7 @@ getInfo(PreferredPet) :-
 
 getInfo(PreferredPet) :-
     writeln('Sorry, no pets match your preferences.').
+
+/** <examples>
+?- ?- consult('main.pl').
+*/
